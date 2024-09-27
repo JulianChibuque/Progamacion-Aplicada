@@ -15,49 +15,43 @@ print(
 
 eleccion = int(input("que funcion desea calcular por medio de series de taylor:"))
 
-def Exponencial(x, max_iter = 100):
-    p = int(x)
-    f = 1
-    acc = 1
-    for i in range(max_iter):
-        d = p/f
-        if d < 0.001:
+def Exponencial(x, max_iter=100):
+    acc = 1  # Comienza en 1 porque el primer término es 1 (x^0/0!)
+    factorial = 1
+    for i in range(1, max_iter):
+        factorial *= i  # Calcula el factorial en cada iteración
+        term = x**i / factorial  # Calcula el siguiente término de la serie
+        if abs(term) < 0.001:  # Condición de convergencia
             break
-        acc = acc + d
-        p = p*int(x)
-        f = f*i
-    return acc 
-
-def coseno (x, max_iter= 100):
-    p = x*x
-    f = 2
-    acc = 1 
-    signo = -1
-    n = 1
-    for i in range(max_iter):
-        d = p/f
-        if d < 0.001:
-            break
-        acc = acc+d*signo
-        p = p*x*x
-        f = f*(2*n-1)*2*n
-        signo = signo*-1
-    return acc 
-
-def logaritmica (x, max_iter):
-    acc = 0
-    p = x-1
-    signo = 1 
-
-    for i in range(max_iter):
-        d = p/i
-        if d < 0.001:
-            break
-        acc = acc+d*signo
-        signo = signo*-1
-        p=p*(x-1)
+        acc += term  # Suma el término al acumulador
     return acc
 
+
+def coseno(x, max_iter=100):
+    acc = 1  # Primer término es 1
+    factorial = 1
+    signo = -1
+    for i in range(1, max_iter):
+        factorial *= (2 * i) * (2 * i - 1)  # Factorial para el término
+        term = (x**(2 * i)) / factorial  # x^(2n) / (2n)!
+        if abs(term) < 0.001:  # Condición de convergencia
+            break
+        acc += signo * term  # Alterna el signo
+        signo *= -1  # Cambia el signo
+    return acc
+
+def logaritmica(x, max_iter=100):
+    if x <= 0:  # El logaritmo natural no está definido para x <= 0
+        return float('nan')
+    if x == 1:
+        return 0  # log(1) = 0
+    acc = 0
+    term = (x - 1) / x  # Primer término
+    for i in range(1, max_iter):
+        acc += (term**i) / i * (-1 if i % 2 == 0 else 1)  # Alterna el signo
+        if abs((term**i) / i) < 0.001:
+            break
+    return acc
 
 def impresion(opcion):
     puntoX = float(input("muy bien, entonces dime en que punto deseas calcular la funcion:"))
